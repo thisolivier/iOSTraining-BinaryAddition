@@ -16,17 +16,22 @@ class DataCell: UITableViewCell{
     
     @IBAction func do2ButtonPressed(_ sender: UIButton) {
         if let _ = delegate {
-            delegate?.dataCellButton2Pressed()
+            if dataCellLabel.text != nil{
+                delegate?.dataCellButton2Pressed(parentCell: self)
+            }
+            
         }
     }
     @IBAction func do1ButtonPressed(_ sender: UIButton) {
         if let _ = delegate {
-            delegate?.dataCellButton1Pressed()
+            if dataCellLabel.text != nil{
+                delegate?.dataCellButton1Pressed(parentCell: self)
+            }
         }
     }
 }
 
 protocol DataCellProtocol {
-    func dataCellButton1Pressed()
-    func dataCellButton2Pressed()
+    func dataCellButton1Pressed(parentCell: DataCell)
+    func dataCellButton2Pressed(parentCell: DataCell)
 }

@@ -9,7 +9,10 @@
 import UIKit
 
 class InitialViewController: UIViewController, UITableViewDataSource, DataCellProtocol{
+    
+    @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var multiplierChoicesTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         multiplierChoicesTableView.dataSource = self
@@ -19,13 +22,41 @@ class InitialViewController: UIViewController, UITableViewDataSource, DataCellPr
         super.didReceiveMemoryWarning()
     }
     
-    // Delegated actions from cells
-    func dataCellButton1Pressed() {
-        print("Button 1 Pressed")
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
-    func dataCellButton2Pressed() {
+    func updateTotal(deltaVal:Int){
+        var newVal = deltaVal
+        if let currentString = totalLabel.text {
+            let componentsOfString = currentString.components(separatedBy: " ")
+            if componentsOfString.count == 2, let currentValue = Int(componentsOfString[1]) {
+                print(currentValue)
+                newVal = currentValue + deltaVal
+            }
+        }
+        if newVal >= 0{
+            totalLabel.text = "Total: \(newVal)"
+        } else {
+            totalLabel.text = "Total: 0"
+        }
+    }
+    // Delegated actions from cells
+    func dataCellButton1Pressed(parentCell: DataCell) {
+        print("Button 1 Pressed")
+        if let numberAsString = parentCell.dataCellLabel.text{
+            let number = Int(numberAsString)
+            updateTotal(deltaVal: number ?? 0)
+        }
+        
+    }
+    
+    func dataCellButton2Pressed(parentCell: DataCell) {
         print("Button 2 Pressed")
+        if let numberAsString = parentCell.dataCellLabel.text{
+            let number = (Int(numberAsString) ?? 0) * -1
+            updateTotal(deltaVal: number)
+        }
     }
     
     // Protocol methods for Table Data Source
@@ -34,7 +65,7 @@ class InitialViewController: UIViewController, UITableViewDataSource, DataCellPr
         newCell.backgroundColor = newCell.contentView.backgroundColor
         newCell.delegate = self
         let intForText = pow(10, Double(indexPath.row))
-        newCell.dataCellLabel.text = "\(intForText)"
+        newCell.dataCellLabel.text = "\(Int(intForText))"
         for button in newCell.addMinusButtons{
             button.layer.cornerRadius = 10
         }
